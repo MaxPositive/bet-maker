@@ -1,0 +1,29 @@
+volumes:
+  postgres_data: {}
+
+services:
+  app:
+    container_name: app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    env_file:
+      - src/docker.env
+  postgres:
+    image: postgres
+    container_name: db
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: bet_db
+      TEST_DB: test_bet_db
+    hostname: db
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/
+      - postgres_data:/var/lib/postgresql/data
